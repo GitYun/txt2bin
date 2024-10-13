@@ -33,7 +33,7 @@ def openfile():
 
 def selectOutFilename():
     global out_filename
-    out_filename = filedialog.asksaveasfilename(initialfile="txt2bin.bin", 
+    out_filename = filedialog.asksaveasfilename(initialfile="txt2bin.bin",
         filetypes=[("Bin文件", ".bin")])
     if (out_filename != ''):
         output_text.set(out_filename)
@@ -47,8 +47,14 @@ def convert():
         values = file_content.split(" ")
         in_txt = []
 
+        val = txtfmt.get()
+        if (val == '10'):
+            txtbase = 10
+        else:
+            txtbase = 16
+
         for i in range(len(values)):
-            in_txt.append(int((values[i]), base=10))
+            in_txt.append(int((values[i]), base=txtbase))
 
         byte_len = int(byte_num.get()[0], base=10)
 
@@ -71,7 +77,7 @@ def convert():
                 else:
                     blen = 4
                 fbinary.write(int.to_bytes(in_txt[i], blen, byteorder=endian.get()))
-            
+
             fbinary.close()
 
     convert_state.set("完成")
@@ -86,7 +92,7 @@ if __name__ == '__main__':
     window = Tk()
     window.geometry('400x150')
     window.title("txt_2_bin_converter")
-    
+
     input_text = StringVar()
     output_text = StringVar()
     convert_state = StringVar()
@@ -101,7 +107,7 @@ if __name__ == '__main__':
 
     Label(window, text="转换状态:").grid(column=0, row=2, sticky=(W))
     Entry(window, width=40, textvariable=convert_state, state='readonly').grid(column=1, row=2, sticky=(W), columnspan=4)
-    btn2 = Button(window, text="转换", width=5, command=convert).grid(column=5, row=2, padx=10)    
+    btn2 = Button(window, text="转换", width=5, command=convert).grid(column=5, row=2, padx=10)
 
     Label(window, text="其他配置:").grid(column=0, row=4, sticky=(W))
 
@@ -119,6 +125,11 @@ if __name__ == '__main__':
     format.set("Hex")
     Label(window, text="转换格式").grid(column=3, row=3, sticky=(W))
     OptionMenu(window, format, 'Hex', 'Raw').grid(column=3, row=4, sticky=(W))
+
+    txtfmt = StringVar()
+    txtfmt.set("16")
+    Label(window, text="(txt)进制").grid(column=4, row=3, sticky=(W))
+    OptionMenu(window, txtfmt, '10', '16').grid(column=4, row=4, sticky=(W))
 
     window.mainloop()
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
